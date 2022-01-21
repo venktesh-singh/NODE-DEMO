@@ -5,12 +5,12 @@ const AssignTask = require("../model/assignTask");
 router.post("/assigntask", async (req,res)=>{
     console.log(req.body)
     const { name, email, phone} = req.body;
-
+    const status = 1;
     if (!name || !email|| !phone  ) {
         return res.status(422).json({ erorr: "Please filled the fild properly" });
     }
      try {
-        const task = new AssignTask({name, email, phone});
+        const task = new AssignTask({name, email, phone, status});
         await task.save();
 
         res.status(201).json({ message: "Add Succefully" });
@@ -23,14 +23,12 @@ router.post("/assigntask", async (req,res)=>{
 router.get('/tasklist', async (req, res) => {
     try {
         const sort = { name: 1 };
-        //const sort = { length: 1 };
         const tasks = await AssignTask.find({}).sort(sort);
         res.send(tasks)
     } catch (err) {
         res.status(400).send(err)
     }
 });
-
 
 +
 router.get('/tasklist/:id', async (req, res) => {
@@ -48,6 +46,19 @@ router.patch('/task/update/:id', async (req, res) => {
     try {
         const _id = req.params.id;
         const task = await AssignTask.findByIdAndUpdate(_id, req.body, {
+            new: true
+        } )
+        res.send(task)
+    } catch (e) {
+        res.status(500).send(e)
+    }
+});
+
+router.patch('/taskdelete/update/:id', async (req, res) => {
+    const status = 0;
+    try {
+        const _id = req.params.id;
+        const task = await AssignTask.findByIdAndUpdate(_id, status, req.body, {
             new: true
         } )
         res.send(task)
