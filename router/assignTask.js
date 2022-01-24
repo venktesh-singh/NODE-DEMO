@@ -22,19 +22,30 @@ router.post("/assigntask", async (req,res)=>{
 
 router.get('/tasklist', async (req, res) => {
     try {
-        const sort = { name: 1 };
+        const sort = { name: -1 };  
         const tasks = await AssignTask.find({}).sort(sort);
+    } catch (err) {
+        res.status(400).send(err)  
+    }
+});     
+
+router.get('/tasklistlike', async (req, res) => {
+    try {
+        //const sort = { name: -1 };  
+        //const tasks = await AssignTask.find({}).sort(sort);
+        
+        const tasks = await AssignTask.find( { 'name' : /^Ra/} ).limit(5);
         res.send(tasks)
     } catch (err) {
         res.status(400).send(err)
-    }
-});
+    }   
+}); 
 
 +
 router.get('/tasklist/:id', async (req, res) => {
     try {
         const _id = req.params.id;
-        const user = await AssignTask.findById({_id})
+        const user = await AssignTask.findById({_id}) 
         res.send(user)
     } catch (err) {
         res.status(500).send(err)
@@ -54,18 +65,18 @@ router.patch('/task/update/:id', async (req, res) => {
     }
 });
 
-router.patch('/taskdelete/update/:id', async (req, res) => {
-    const status = 0;
+router.patch('/taskupdate/update/:id', async (req, res) => {
+    
     try {
         const _id = req.params.id;
-        const task = await AssignTask.findByIdAndUpdate(_id, status, req.body, {
-            new: true
+        const task = await AssignTask.findByIdAndUpdate(_id, req.body, {
+            new: true, status : 0
         } )
         res.send(task)
     } catch (e) {
         res.status(500).send(e)
     }
-});
+});  
 
 router.delete('/tasklist/delete/:id', async (req, res) => {
     try {
