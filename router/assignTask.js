@@ -5,7 +5,7 @@ const AssignTask = require("../model/assignTask");
 router.post("/assigntask", async (req,res)=>{
     console.log(req.body)
     const { name, email, phone} = req.body;
-    const status = activate;
+    const status = 'activate';
     if (!name || !email|| !phone  ) {
         return res.status(422).json({ erorr: "Please filled the fild properly" });
     }
