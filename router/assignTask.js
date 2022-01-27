@@ -5,7 +5,7 @@ const AssignTask = require("../model/assignTask");
 router.post("/assigntask", async (req,res)=>{
     console.log(req.body)
     const { name, email, phone} = req.body;
-    const status = Activaten;
+    const status = activate;
     if (!name || !email|| !phone  ) {
         return res.status(422).json({ erorr: "Please filled the fild properly" });
     }
@@ -20,6 +20,24 @@ router.post("/assigntask", async (req,res)=>{
     }
 }) 
 
+router.post("/assigntaskInsert", async (req,res)=>{
+    console.log(req.body)
+    const { name, email, phone} = req.body;
+    const status = activate;
+    if (!name || !email|| !phone  ) {
+        return res.status(422).json({ erorr: "Please filled the fild properly" });
+    }
+     try {
+        const task = new AssignTask.insertMany({name, email, phone, status});
+        await task.save();
+
+        res.status(201).json({ message: "Add Many Record Succefully" });
+
+    } catch (err) {
+        console.log(err);
+    }
+}) 
+
 router.get('/tasklist', async (req, res) => {  
     try {
         const sort = { name: -1 };  
@@ -27,7 +45,18 @@ router.get('/tasklist', async (req, res) => {
     } catch (err) {
         res.status(400).send(err)  
     }
-});     
+});      
+
+
+router.get('/tasklistStatusAct', async (req, res) => {  
+    try {
+          
+        const tasks = await AssignTask.find( { status:{$eq:'1'} } );
+    } catch (err) {
+        res.status(400).send(err)  
+    }
+});
+
 
 router.get('/tasklistlike', async (req, res) => {
     try {
